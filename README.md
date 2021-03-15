@@ -1,4 +1,7 @@
+
 # PhD Optional Modules
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)  
+  
 Code and material for my PhD optional modules. Taken from Goldsmith's MsC in Computational Cognitive Neuroscience.
 
 # Modules
