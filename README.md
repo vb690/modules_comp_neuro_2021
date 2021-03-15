@@ -1,6 +1,6 @@
 
 # PhD Optional Modules
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)  
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/vb690/modules_comp_neuro_2021/HEAD)  
   
 Code and material for my PhD optional modules. Taken from Goldsmith's MsC in Computational Cognitive Neuroscience.
 
