@@ -1,0 +1,15 @@
+digraph G {
+	overlap=scale splines=true
+	edge [fontsize=12]
+	node [fillcolor="#cae6df" shape=circle style=filled]
+	node [shape=box style=""]
+	ces_post [label=ces_post]
+	TA [label=TA]
+	esteem [label=esteem]
+	satis [label=satis]
+	esteem -> satis [label="0.282\np-val: 0.00"]
+	esteem -> TA [label="0.388\np-val: 0.01"]
+	esteem -> ces_post [label="-1.060\np-val: 0.00"]
+	TA -> ces_post [label="0.186\np-val: 0.05"]
+	satis -> ces_post [label="0.553\np-val: 0.03"]
+}
