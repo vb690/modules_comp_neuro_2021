@@ -1,0 +1,69 @@
+\documentclass{article}
+
+\newcommand{\quickwordcount}[1]{%
+  \immediate\write18{texcount -1 -sum -merge -q #1.tex output.bbl > #1-words.sum }%
+  \input{#1-words.sum} words%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[margin=1in]{geometry}
+\usepackage{biblatex}
+
+\addbibresource{bibliography.bib}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\title{"Prefrontal cortex as a meta-reinforcement learning system" \\
+Critical Review}
+\author{Valerio Bonometti}
+
+\maketitle
+
+\section*{Words Count}
+This critical review has a total of \quickwordcount{main} 
+
+\section{Summary and Evaluation}
+\label{summary_evaluation}
+
+\paragraph{Summary}
+\label{summary}
+The present work challenges the classical view on Dopamine (DA) and Reward Prediction Error (RPE) in the basal ganglia as unique mechanisms for reward-driven learning. Here, the presence of two distinct but functionally intertwined reinforcement-learning (RL) mechanisms is hypothesized. A model-free system reflecting the traditional RPE view of DA (i.e. learning as predicted vs expected reward dissociation) and a model-based one produced by the prefrontal cortex (PFC) (i.e. learning as changes in connections driven by RPE signal). For evaluating this hypothesis the authors implement a biologically inspired computational model of the PFC using a recurrent Artificial Neural Network (ANN) with weights adjusted through model free RL (see fig 1). In order to evaluate specific aspects of their theoretical framework, the authors test the model on a series of tasks taken from the literature on reward-driven learning. The model's emergent behaviour is compared with results from original animal studies adopting the same quantitative methods \footnote{See simulations from 1 to 6 and associated figures.}. In light of their results, the authors revisit the tradition RPE function of DA in the basal ganglia as a bottom-up mechanism driving the emergence of a meta-level RL algorithm in the PFC. This has all the characteristics of conventional RL algorithms but with the ability to improve learning working on a higher level of abstraction.
+
+
+\paragraph{Critical Assessment}
+\label{critical_assessment}
+In this work, the authors using ANNs attempted a mechanistic explanations of how computations in the cortico-basal circuit arise during reward-based learning. The choice of a model that is not fully biologically plausible I believe is in this case acceptable given the strong focus on an algorithmic level of explanation. The adopted methodology and analysis are presented in details and functional to the aim of the authors: comparing the emergent behaviour of their model with in-vivo brain activity. This was achieved simulating the experimental methodology of previous studies but substituting the animals with an artificial agents guided by the computational model proposed by the authors. The results from the 6 simulations build a nice narrative leading to the conclusion, but the parallelism between the adopted model and the functioning of the PFC is in my opinion excessively strong (e.g. the title). The authors provide compelling evidence of an overlap in computations between the PFC and \textbf{a} biologically inspired algorithm, however since this last one does not obey to the same constrains of its biological counterpart we cannot safely assert that is \textbf{the} type of algorithm that the PFC implements. Nevertheless, the authors propose a robust and convincing framework for reconciliating a series of computational evidence from the literature on reward-based learning.
+
+\section{Introduction and Methods}
+\label{intro_and_methods}
+
+\paragraph{Introduction}
+\label{intro}
+The paper concisely but clearly reports the idea of DA driven RPE learning and how it has been challenged by findings presenting PFC as an alternative mechanism for reinforcement-based learning. This is supported by a circumscribed but curated selection references that are also used for defining a series of open questions that authors tries to answer. Since both basal ganglia and PFC support reward based learning, why the brain needs such redundancy? Are these two systems in some way related? If so, which are their functions?
+
+\paragraph{Methods and Modelling Approach}
+\label{methods}
+The authors clearly present a set of simulation experiments for supporting the hypothesis that RPE generated in the basal ganglia (represented by a temporal difference learning algorithm) drive the emergence of a second more flexible and efficient RL algorithm \footnote{See simulation 1} in the PFC (modelled with a recurrent ANN). The adopted methodology and modelling approach are relatively simple but nevertheless robust. The authors explain them thoroughly with appropriated reference to the literature when details are omitted. However, I find quite unsettling that the employed code is not made available. Given the extensive use of simulations direct implementation details (e.g. if any libray or computational framework has been used) can be quite important. The first paragraph of the result section clearly states that many physiological and neuro-anatomical details have been abstracted which, given the strong focus on an algorithmic level of analysis, I believe is fair and appropriated. For the same reason I believe that the level of analysis at which both the chosen model and simulations operate is pertinent. The authors are not interested in precisely describe the biological mechanisms underlying learning in the PFC or basal ganglia but rather in the broader type of computations they perfrom. In this view, moving at a lower level of analysis (e.g. how neurons fire or integrate information in the basal ganglia and PFC) would likely not provide a higher degree of insight. However, despite the use of an ANN with recurrent connections might be an acceptable simplification for the PFC (it is not fully biologically constrained but there are no evidence of it being flat-out wrong), the learning algorithms (i.e. backpropagation through time) used for adjusting the connections inside the network it is not. This, is supported by recent works highlighting the criticalities in using back propagation \cite{whittington2019theories} (and back propagation through time in particular \cite{lillicrap2019backpropagation}) for representing the propagation of error signals in the brain. Nevertheless, the combination of ANNs and backpropagation makes it so that the model proposed by the authors could be applied in very complex scenarios and potentally provide insights that would otherwise require a prohibitively high amount of computational resources for other approaches. This is also supported by the optimal generalizability properties that the chosen approach shows. The proposed model is able to adapt not just to different types of tasks (i.e. the 6 presented simulations cover as many different types of tasks) but also to variations within the same task (i.e. the meta-algorithm produced by the recurrent ANN). However, with the constrain of them focusing mostly on reward based learning and decision making. In this view, a direct generalization or integration with other cognitive functions might be difficult both at the level of implementation and explanation: without strong a-priori hypothesis the unconstrained nature of ANNs makes the interpretation of their behaviour quite challenging  (i.e. ANNs as black boxes). Indeed given their universal function approximation properties \cite{hornik1989multilayer} ANNs are likely to converge to solutions that are optimal for a specific task but do not necessarily overlap with those provided by specific cognitive functions. Related to this, I believe that in the present work including simulations where the recurrent ANN is replaced by feedforward or 1-dimensional convolutional (given their good performance in sequential tasks \cite{kalchbrenner2014convolutional}) ANNs would allow to more robustly support the necessity of recurrency for the emergence of the meta-RL framework proposed by the authors, hence strengthening the connection with the neuroanatomical studies depicting the cortico-basal system as a recurrent network.
+
+\section{Results and Discussion}
+\label{results_discussion}
+
+\paragraph{Results}
+\label{results}
+The biggest strength in this work lies in the nature of the results: all the outcomes presented in the 6 simulations are emerging properties of the proposed model and show a remarkable overlap with the original experimental data. This is presented through a very effective use of the image panels. For each experiment the authors report a single panel graphing in one section the quantitative outcomes derived from the original in-vivo study and in the adjacent section the same results derived from the analysis of the emergent properties of their model. These provide a series of compelling arguments supporting the original hypothesis, that what emerges from the reccurrent ANNs is a full fledged RL that also mimics many PFC functions: adapting to changes in the task structure and reward volatility \footnote{See simulation 2 and 4}, modifying the value attributed to specific actions according to changes in the task contingencies \footnote{See simulation 3} and exploiting learned task structure for more efficient learning when variations within the same occur \footnote{See simulation 4}. 
+
+\paragraph{Discussion}
+
+When discussing the results, the authors openly address the simplifications made in their model, but do not fully highlight the potential drawbacks connected to translating their findings in biological systems. This is accentuated by the fact that very little reference to previous computational works is made. For instance, Wang at al. \cite{wang2002probabilistic} employing a more mechanistic and biologically plausible model (although ad-hoc implemented) higlighted the importance of global inhibition in decision making, a prominent function of the PFC and widely present in all the simulations employed by the authors. Nevertheless the emergence of such mechanisms in the model proposed by the authors is not investigated nor taken into consideration. For the most part the discussion focus on presenting a series of testable hypothesis arising from the presented work: what is the role of different portions of the basal ganglia and PFC in the presented meta-RL framework? Is the brain implementing both model based and model free RL? What type of relationships meta-RL have with episodic memory?  
+\label{discussion}
+
+\section{Final Recommendation}
+\label{final_recommendation}
+The authors propose a clear theoretical framework for integrating findings on the role of the fronto-basal network in reward driven learning. They support this with a series of ad-hoc simulation experiments that are well structured and answer to specific questions. Despite a strictly biologically constrained approach was not adopted the similarities between the emergent behaviour of the model and data from in-vivo studies are striking and provide good support for the authors' initial hypothesis. In this view, I recommend this paper for publication suggesting two minor revisions. I would stress how the model has good descriptive power but does not provide a full mechanistic description on how and where in the PFC meta-reinforcement learning emerges (this is partially addressed in the discussion), hence direct parallelism with the PFC (which is a rather broad area) have to be taken with a grain of salt. Second I would exhort the authors to make their code publicly available saving any implementation-related blockers to whoever aims to replicate or extend their work.
+
+\printbibliography
+
+\end{document}
