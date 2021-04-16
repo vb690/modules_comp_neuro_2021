@@ -1,0 +1,10 @@
+jupyterlab
+tqdm
+numpy
+scipy
+pandas
+pyreadstat
+statsmodels
+pymc3
+matplolib
+seaborn
