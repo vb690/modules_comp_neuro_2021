@@ -130,8 +130,8 @@ class ExperimentParser:
         else:
             return None
 
-    def __get_subject_data(self, text):
-        &#34;&#34;&#34;Private method for turning text data extracted from a subject
+    def get_subject_data(self, text):
+        &#34;&#34;&#34;Turn text data extracted from a subject
         .dat file in a format suitable to be transformed in a pandas DataFrame.
 
             Args:
@@ -208,7 +208,7 @@ class ExperimentParser:
                     txt_str.strip() for txt_str in text if txt_str != &#39;&#39;
                 ]
 
-                subject_data = self.__get_subject_data(text=text)
+                subject_data = self.get_subject_data(text=text)
 
                 subject_data = pd.DataFrame(
                     np.array(subject_data),
@@ -538,8 +538,8 @@ parsed are located.</dd>
         else:
             return None
 
-    def __get_subject_data(self, text):
-        &#34;&#34;&#34;Private method for turning text data extracted from a subject
+    def get_subject_data(self, text):
+        &#34;&#34;&#34;Turn text data extracted from a subject
         .dat file in a format suitable to be transformed in a pandas DataFrame.
 
             Args:
@@ -616,7 +616,7 @@ parsed are located.</dd>
                     txt_str.strip() for txt_str in text if txt_str != &#39;&#39;
                 ]
 
-                subject_data = self.__get_subject_data(text=text)
+                subject_data = self.get_subject_data(text=text)
 
                 subject_data = pd.DataFrame(
                     np.array(subject_data),
@@ -937,6 +937,81 @@ Returns:
         return filtered_data</code></pre>
 </details>
 </dd>
+<dt id="modules.data_handling.ExperimentParser.get_subject_data"><code class="name flex">
+<span>def <span class="ident">get_subject_data</span></span>(<span>self, text)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Turn text data extracted from a subject
+.dat file in a format suitable to be transformed in a pandas DataFrame.</p>
+<pre><code>Args:
+    text (list): is a list of strings containg the logs from all
+        the trials extracted from the .dat file.
+
+Returns:
+    subject_data (list): list of lists containing all the trails
+        logs extracted for a specific subject.
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_subject_data(self, text):
+    &#34;&#34;&#34;Turn text data extracted from a subject
+    .dat file in a format suitable to be transformed in a pandas DataFrame.
+
+        Args:
+            text (list): is a list of strings containg the logs from all
+                the trials extracted from the .dat file.
+
+        Returns:
+            subject_data (list): list of lists containing all the trails
+                logs extracted for a specific subject.
+    &#34;&#34;&#34;
+    subject_data = []
+    fnoa_order = None
+
+    for line in tqdm(text, leave=False):
+
+        if &#39;%&#39; in line:  # ignore values with % as in forum
+            continue
+        elif &#39;Map&#39; in line:
+            continue
+        # APA recommend the use of participant tho
+        elif &#39;Subject&#39; in line:
+            self.subject_code = line.split()[0]
+        elif &#39;Counterbal&#39; in line:
+            self.counterbalance_code = line.split()[0]
+        elif &#39;Format&#39; in line:
+            self.task_format_code = line.split()[0]
+        elif &#39;Condition&#39; in line:
+            self.condition_code = line.split()[0]
+            # we could verify which counterbal condition
+            # has FnoA first but it would be kinda cheating
+            if fnoa_order is None:
+                fnoa_order = 1 if \
+                    self.condition_code == &#39;FnoA&#39; else 2
+        elif &#39;Training&#39; in line:
+            self.phase_code = line.split()[0]
+        elif &#39;Test&#39; in line:
+            self.phase_code = line.split()[0]
+        else:
+            experiment_info = [
+                self.subject_code,
+                self.counterbalance_code,
+                self.task_format_code,
+                self.condition_code,
+                self.phase_code,
+                fnoa_order
+            ]
+            experiment_logs = self.get_logs(
+                line=line.split(),
+                is_test=self.phase_code == &#39;Test&#39;
+            )
+            subject_data.append(experiment_info + experiment_logs)
+
+    return subject_data</code></pre>
+</details>
+</dd>
 <dt id="modules.data_handling.ExperimentParser.parse_dat_files"><code class="name flex">
 <span>def <span class="ident">parse_dat_files</span></span>(<span>self)</span>
 </code></dt>
@@ -975,7 +1050,7 @@ Returns:
                 txt_str.strip() for txt_str in text if txt_str != &#39;&#39;
             ]
 
-            subject_data = self.__get_subject_data(text=text)
+            subject_data = self.get_subject_data(text=text)
 
             subject_data = pd.DataFrame(
                 np.array(subject_data),
@@ -1112,6 +1187,7 @@ Returns:
 <li><code><a title="modules.data_handling.ExperimentParser.get_logs" href="#modules.data_handling.ExperimentParser.get_logs">get_logs</a></code></li>
 <li><code><a title="modules.data_handling.ExperimentParser.get_norm_correct" href="#modules.data_handling.ExperimentParser.get_norm_correct">get_norm_correct</a></code></li>
 <li><code><a title="modules.data_handling.ExperimentParser.get_prob_norm_correct" href="#modules.data_handling.ExperimentParser.get_prob_norm_correct">get_prob_norm_correct</a></code></li>
+<li><code><a title="modules.data_handling.ExperimentParser.get_subject_data" href="#modules.data_handling.ExperimentParser.get_subject_data">get_subject_data</a></code></li>
 <li><code><a title="modules.data_handling.ExperimentParser.parse_dat_files" href="#modules.data_handling.ExperimentParser.parse_dat_files">parse_dat_files</a></code></li>
 </ul>
 </li>

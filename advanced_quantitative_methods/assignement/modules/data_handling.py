@@ -102,8 +102,8 @@ class ExperimentParser:
         else:
             return None
 
-    def __get_subject_data(self, text):
-        """Private method for turning text data extracted from a subject
+    def get_subject_data(self, text):
+        """Turn text data extracted from a subject
         .dat file in a format suitable to be transformed in a pandas DataFrame.
 
             Args:
@@ -180,7 +180,7 @@ class ExperimentParser:
                     txt_str.strip() for txt_str in text if txt_str != ''
                 ]
 
-                subject_data = self.__get_subject_data(text=text)
+                subject_data = self.get_subject_data(text=text)
 
                 subject_data = pd.DataFrame(
                     np.array(subject_data),

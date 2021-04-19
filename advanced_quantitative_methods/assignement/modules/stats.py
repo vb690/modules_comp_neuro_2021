@@ -1,6 +1,7 @@
 import numpy as np
 
 import pymc3 as pm
+from theano import tensor as tt
 
 
 def build_logistic_model(df, null_model=True, priors={
@@ -96,3 +97,76 @@ def build_logistic_model(df, null_model=True, priors={
         )
 
     return log_reg
+
+
+def build_pearson_model(df, X, y, priors={
+                            # we assume standardization
+                            'Mus': {'mu': 0, 'sigma': 1},
+                            'Sigmas': {'beta': 1},
+                            'Rho': {'mu': 0, 'sigma': 0.25}
+                            }
+                        ):
+    """Function for building the computational graph for a Pearson correlation
+    model between two variables.
+
+        Args:
+            df (DataFrame): a pandas DataFrame
+            X (str): a string specifying column of the first variable in df
+            y (str): a string specifying column of the second variable in df
+            priors (dict): a dictionary specifying the parameters of the
+                priors for the model. By default they are set to be
+                only weakly informative. Keys are components of the model
+                while values are dictionaries reporting the parameters of the
+                relevant distribution.
+
+        Returns:
+            pearson_model (PyMC3 model): a PyMC3 model containing the
+                computational graph for a pearson correlation.
+    """
+    with pm.Model() as pearson_model:
+        Xy = pm.Data(
+            name='Xy',
+            value=df[[X, y]].values
+        )
+        bounded_normal = pm.Bound(pm.Normal, lower=-1, upper=1)
+
+        mu = pm.Normal(
+            name='Mus',
+            mu=priors['Mus']['mu'],
+            sigma=priors['Mus']['sigma'],
+            shape=2
+        )
+        sigma = pm.HalfCauchy(
+            name='Sigmas',
+            beta=priors['Sigmas']['beta'],
+            shape=2
+        )
+        # we want to have slightly informative priors for the correlation
+        # coeffiient, here values beyond -0.75, 0.75 are going to be very
+        # unlikely. Note that these priors are very generous for a psychology
+        # study.
+        rho = bounded_normal(
+            name='Rho',
+            mu=priors['Rho']['mu'],
+            sigma=priors['Rho']['sigma']
+        )
+
+        covariance = pm.Deterministic(
+            'Covariance',
+            tt.stacklists(
+                [
+                    [sigma[0]**2, rho * sigma[0] * sigma[1]],
+                    [rho * sigma[0] * sigma[1], sigma[1]**2]
+                ]
+            ),
+        )
+        # precision as invers of varianc
+
+        observed = pm.MvNormal(
+            name='Xy_out',
+            mu=mu,
+            cov=covariance,
+            observed=Xy
+        )
+
+    return pearson_model
